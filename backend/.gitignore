@@ -1,0 +1,75 @@
+# =========================
+# Node Modules
+# =========================
+node_modules/
+
+# =========================
+# Environment Variables
+# =========================
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# =========================
+# Logs
+# =========================
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# =========================
+# Runtime Data
+# =========================
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# =========================
+# Coverage & Testing
+# =========================
+coverage/
+.nyc_output/
+
+# =========================
+# Build Output
+# =========================
+dist/
+build/
+
+# =========================
+# MongoDB Local Data (if any)
+# =========================
+data/
+dump/
+
+# =========================
+# OS Files
+# =========================
+.DS_Store
+Thumbs.db
+
+# =========================
+# IDE / Editor Files
+# =========================
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# =========================
+# Docker
+# =========================
+docker-compose.override.yml
+
+# =========================
+# Temporary Files
+# =========================
+tmp/
+temp/
+.cache/
