@@ -1,42 +1,34 @@
 const express = require("express");
 const router = express.Router();
-const GeneratorDetails = require("../models/GeneratorDetails");
 
-/* =========================
-   ADD GENERATOR DETAILS
-========================= */
-router.post("/", async (req, res) => {
-  try {
-    console.log("Incoming Data:", req.body); // 🔥 ADD THIS
+const generatorController = require("../controllers/GeneratorDetailController");
 
-    const newDetails = new GeneratorDetails(req.body);
-    await newDetails.save();
+/* ===============================
+   GENERATOR ROUTES
+=============================== */
 
-    console.log("Saved Successfully"); // 🔥 ADD THIS
+router.post("/", generatorController.addGenerator);
 
-    res.json({ message: "Generator details saved successfully" });
-  } catch (err) {
-    console.error("SAVE ERROR:", err);
-    res.status(500).json({ error: err.message });
-  }
-});
+router.get("/", generatorController.getAllGenerators);
 
-/* =========================
-   GET ALL DETAILS
-========================= */
-router.get("/", async (req, res) => {
-  const data = await GeneratorDetails.find();
-  res.json(data);
-});
+/* ===============================
+   SERVICE ROUTES
+=============================== */
 
-/* =========================
+// add service
+router.post("/service/:topicId", generatorController.addServiceRecord);
+
+// get service history
+router.get("/service/history/:topicId", generatorController.getServiceHistory);
+
+// next service alerts
+router.get("/service/alerts/next", generatorController.getNextServiceAlert);
+
+/* ===============================
    GET BY TOPIC ID
-========================= */
-router.get("/:topicId", async (req, res) => {
-  const data = await GeneratorDetails.findOne({
-    topicId: req.params.topicId,
-  });
-  res.json(data);
-});
+   ⚠ MUST BE LAST
+=============================== */
+
+router.get("/:topicId", generatorController.getGeneratorByTopicId);
 
 module.exports = router;

@@ -34,6 +34,13 @@ function AddGeneratorDetails() {
     customerContact: "",
     customerEmail: "",
     notes: "",
+
+    // SERVICE FIELDS
+    serviceName: "",
+    serviceDate: "",
+    nextServiceDate: "",
+    technician: "",
+    serviceNotes: "",
   });
 
   const handleChange = (e) => {
@@ -87,6 +94,17 @@ function AddGeneratorDetails() {
             customerContact: form.customerContact,
             customerEmail: form.customerEmail,
             notes: form.notes,
+
+            // SERVICE HISTORY
+            serviceHistory: [
+              {
+                serviceName: form.serviceName,
+                serviceDate: form.serviceDate,
+                nextServiceDate: form.nextServiceDate,
+                technician: form.technician,
+                notes: form.serviceNotes,
+              },
+            ],
           }),
         },
       );
@@ -104,19 +122,19 @@ function AddGeneratorDetails() {
 
   if (!isLoaded)
     return (
-      <div className="min-h-screen flex items-center justify-center text-white bg-gradient-to-r from-[#0f172a] to-[#0a2a66]">
+      <div className="min-h-screen flex items-center justify-center text-white bg-slate-900">
         Loading Map...
       </div>
     );
 
   return (
-    <div className="min-h-screen bg-gradient-to-r from-[#0f172a] to-[#0a2a66] text-white px-12 py-8">
+    <div className="min-h-screen bg-gradient-to-r from-slate-900 to-blue-950 text-white px-12 py-8">
       {/* Header */}
       <div className="flex justify-between items-center mb-12">
         <CompanyLogo size={60} />
         <button
           onClick={() => navigate("/dashboard")}
-          className="px-6 py-2 border border-white/30 rounded-md hover:bg-white/10 transition"
+          className="px-6 py-2 border border-blue-400 text-blue-300 rounded-md hover:bg-blue-500 hover:text-white transition"
         >
           Back
         </button>
@@ -126,117 +144,193 @@ function AddGeneratorDetails() {
         Generator Installation Registration
       </h2>
 
-      <form onSubmit={handleSubmit} className="space-y-16">
-        {/* Row 1 */}
+      <form onSubmit={handleSubmit} className="space-y-12">
+        {/* Generator Info */}
         <div className="grid md:grid-cols-3 gap-10">
           <div>
-            <label className="label-style">Project / Topic ID</label>
+            <label className="text-blue-300 text-sm mb-1 block">
+              Project / Topic ID
+            </label>
             <input
               name="topicId"
               onChange={handleChange}
               required
-              className="input-style"
+              className="w-full bg-slate-800 border border-slate-600 rounded-lg px-3 py-2"
             />
           </div>
 
           <div>
-            <label className="label-style">Generator Model Name</label>
+            <label className="text-blue-300 text-sm mb-1 block">
+              Generator Model Name
+            </label>
             <input
               name="generatorName"
               onChange={handleChange}
               required
-              className="input-style"
+              className="w-full bg-slate-800 border border-slate-600 rounded-lg px-3 py-2"
             />
           </div>
 
           <div>
-            <label className="label-style">Manufacturer</label>
+            <label className="text-blue-300 text-sm mb-1 block">
+              Manufacturer
+            </label>
             <input
               name="manufacturer"
               onChange={handleChange}
-              className="input-style"
+              className="w-full bg-slate-800 border border-slate-600 rounded-lg px-3 py-2"
             />
           </div>
         </div>
 
-        {/* Row 2 - Map */}
+        {/* Map */}
         <div>
-          <label className="label-style mb-4 block">
+          <label className="text-blue-300 text-sm mb-3 block">
             Installation Location
           </label>
 
-          <GoogleMap
-            mapContainerStyle={containerStyle}
-            center={center}
-            zoom={10}
-            onClick={handleMapClick}
-          >
-            {marker && <Marker position={marker} />}
-          </GoogleMap>
+          <div className="rounded-xl overflow-hidden border border-slate-700">
+            <GoogleMap
+              mapContainerStyle={containerStyle}
+              center={center}
+              zoom={10}
+              onClick={handleMapClick}
+            >
+              {marker && <Marker position={marker} />}
+            </GoogleMap>
+          </div>
 
           <input
             name="address"
             value={form.address}
             readOnly
             placeholder="Selected Address"
-            className="input-style mt-6 w-full"
+            className="w-full mt-4 bg-slate-800 border border-slate-600 rounded-lg px-3 py-2"
           />
         </div>
 
-        {/* Row 3 */}
+        {/* Customer */}
         <div className="grid md:grid-cols-4 gap-10">
-          <div>
-            <label className="label-style">Customer Name</label>
-            <input
-              name="customerName"
-              onChange={handleChange}
-              className="input-style"
-            />
-          </div>
+          <input
+            name="customerName"
+            placeholder="Customer Name"
+            onChange={handleChange}
+            className="bg-slate-800 border border-slate-600 rounded-lg px-3 py-2"
+          />
 
-          <div>
-            <label className="label-style">Customer Company</label>
-            <input
-              name="customerCompany"
-              onChange={handleChange}
-              className="input-style"
-            />
-          </div>
+          <input
+            name="customerCompany"
+            placeholder="Customer Company"
+            onChange={handleChange}
+            className="bg-slate-800 border border-slate-600 rounded-lg px-3 py-2"
+          />
 
-          <div>
-            <label className="label-style">Customer Contact</label>
-            <input
-              name="customerContact"
-              onChange={handleChange}
-              className="input-style"
-            />
-          </div>
+          <input
+            name="customerContact"
+            placeholder="Customer Contact"
+            onChange={handleChange}
+            className="bg-slate-800 border border-slate-600 rounded-lg px-3 py-2"
+          />
 
-          <div>
-            <label className="label-style">Customer Email</label>
-            <input
-              name="customerEmail"
-              onChange={handleChange}
-              className="input-style"
-            />
-          </div>
+          <input
+            name="customerEmail"
+            placeholder="Customer Email"
+            onChange={handleChange}
+            className="bg-slate-800 border border-slate-600 rounded-lg px-3 py-2"
+          />
         </div>
 
-        {/* Row 4 */}
+        {/* Notes */}
         <div>
-          <label className="label-style">Additional Notes</label>
+          <label className="text-blue-300 text-sm mb-1 block">
+            Additional Notes
+          </label>
           <textarea
             name="notes"
             onChange={handleChange}
-            className="input-style w-full h-28"
+            className="w-full h-28 bg-slate-800 border border-slate-600 rounded-lg px-3 py-2"
           />
+        </div>
+
+        {/* SERVICE DETAILS */}
+        <div className="bg-slate-800/40 border border-slate-700 rounded-xl p-6">
+          <h3 className="text-xl font-semibold text-blue-400 mb-6">
+            Service Details
+          </h3>
+
+          <div className="grid md:grid-cols-5 gap-6">
+            {/* Service Name */}
+            <div>
+              <label className="block text-sm text-blue-300 mb-1">
+                Service Name
+              </label>
+              <input
+                name="serviceName"
+                onChange={handleChange}
+                placeholder="Service Name"
+                className="w-full bg-slate-900 border border-slate-600 rounded-lg px-3 py-2"
+              />
+            </div>
+
+            {/* Service Date */}
+            <div>
+              <label className="block text-sm text-blue-300 mb-1">
+                Service Date
+              </label>
+              <input
+                type="date"
+                name="serviceDate"
+                onChange={handleChange}
+                className="w-full bg-slate-900 border border-slate-600 rounded-lg px-3 py-2"
+              />
+            </div>
+
+            {/* Next Service Date */}
+            <div>
+              <label className="block text-sm text-blue-300 mb-1">
+                Next Service Date
+              </label>
+              <input
+                type="date"
+                name="nextServiceDate"
+                onChange={handleChange}
+                className="w-full bg-slate-900 border border-slate-600 rounded-lg px-3 py-2"
+              />
+            </div>
+
+            {/* Technician */}
+            <div>
+              <label className="block text-sm text-blue-300 mb-1">
+                Technician
+              </label>
+              <input
+                name="technician"
+                onChange={handleChange}
+                placeholder="Technician Name"
+                className="w-full bg-slate-900 border border-slate-600 rounded-lg px-3 py-2"
+              />
+            </div>
+
+            {/* Service Notes */}
+            <div>
+              <label className="block text-sm text-blue-300 mb-1">
+                Service Notes
+              </label>
+              <input
+                name="serviceNotes"
+                onChange={handleChange}
+                placeholder="Notes"
+                className="w-full bg-slate-900 border border-slate-600 rounded-lg px-3 py-2"
+              />
+            </div>
+          </div>
         </div>
 
         {/* Buttons */}
         <div className="flex gap-8 pt-8">
           <button
             type="submit"
-            className="px-10 py-3 bg-blue-700 hover:bg-blue-600 rounded-md font-semibold transition"
+            className="px-10 py-3 bg-blue-600 hover:bg-blue-500 rounded-md font-semibold"
           >
             Save Details
           </button>
@@ -244,43 +338,12 @@ function AddGeneratorDetails() {
           <button
             type="button"
             onClick={() => navigate("/dashboard")}
-            className="px-10 py-3 bg-gray-700 hover:bg-gray-600 rounded-md font-semibold transition"
+            className="px-10 py-3 bg-gray-700 hover:bg-gray-600 rounded-md"
           >
             Cancel
           </button>
         </div>
       </form>
-
-      {/* Styles */}
-      <style>
-        {`
-          .label-style {
-            display: block;
-            margin-bottom: 8px;
-            font-size: 14px;
-            color: #93c5fd;
-            font-weight: 500;
-          }
-
-          .input-style {
-            width: 100%;
-            padding: 10px;
-            border-radius: 6px;
-            background: transparent;
-            border-bottom: 1px solid rgba(147,197,253,0.4);
-            color: white;
-            outline: none;
-          }
-
-          .input-style:focus {
-            border-bottom: 1px solid #3b82f6;
-          }
-
-          .input-style::placeholder {
-            color: #cbd5e1;
-          }
-        `}
-      </style>
     </div>
   );
 }

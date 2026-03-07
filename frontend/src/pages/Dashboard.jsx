@@ -16,10 +16,17 @@ const socket = io("http://localhost:5000");
 
 function Dashboard() {
   const [generators, setGenerators] = useState({});
+  const [serviceAlerts, setServiceAlerts] = useState([]);
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
+  /* ---------------- SERVICE ALERTS ---------------- */
+  const [showAllAlerts, setShowAllAlerts] = useState(false);
+
+  const alertsToShow = showAllAlerts
+    ? serviceAlerts
+    : serviceAlerts.slice(0, 1);
   /* ---------------- AUTH CHECK ---------------- */
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -37,12 +44,11 @@ function Dashboard() {
     }
   }, [navigate]);
 
-  /* ---------------- FETCH DATA ---------------- */
+  /* ---------------- FETCH GENERATORS ---------------- */
   useEffect(() => {
-    const fetchData = async () => {
+    const fetchGenerators = async () => {
       try {
         const token = localStorage.getItem("token");
-
         const res = await fetch("http://localhost:5000/api/generators", {
           headers: { Authorization: `Bearer ${token}` },
         });
@@ -75,7 +81,33 @@ function Dashboard() {
       }
     };
 
-    fetchData();
+    fetchGenerators();
+  }, []);
+
+  /* ---------------- FETCH SERVICE ALERTS ---------------- */
+  useEffect(() => {
+    const fetchServiceAlerts = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        const res = await fetch(
+          "http://localhost:5000/api/generator-details/service/alerts/next",
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          },
+        );
+
+        if (!res.ok) return;
+
+        const data = await res.json();
+        if (Array.isArray(data)) {
+          setServiceAlerts(data);
+        }
+      } catch (err) {
+        console.error("Failed to fetch service alerts:", err);
+      }
+    };
+
+    fetchServiceAlerts();
   }, []);
 
   /* ---------------- SOCKET UPDATES ---------------- */
@@ -84,7 +116,6 @@ function Dashboard() {
       setGenerators((prev) => {
         const generatorId = g.id || g._id;
         const prevHistory = prev[generatorId]?.history || [];
-
         return {
           ...prev,
           [generatorId]: {
@@ -148,7 +179,6 @@ function Dashboard() {
         <div className="flex flex-col md:flex-row justify-between items-center gap-6">
           <div className="flex items-center gap-6">
             <CompanyLogo size={70} />
-
             <div>
               <h2 className="text-3xl font-bold bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">
                 Generator Monitoring Dashboard
@@ -175,8 +205,6 @@ function Dashboard() {
             </button>
           </div>
         </div>
-
-        {/* Banner */}
       </div>
 
       {/* ================= SEARCH ================= */}
@@ -189,7 +217,44 @@ function Dashboard() {
         />
       </div>
 
-      {/* ================= CARDS ================= */}
+      {/* ================= SERVICE ALERTS ================= */}
+      {/* ================= SERVICE ALERTS ================= */}
+      {serviceAlerts.length > 0 && (
+        <div className="mb-8 space-y-4">
+          {alertsToShow.map((alert) => (
+            <div
+              key={alert.topicId}
+              className="bg-yellow-500/20 border-l-4 border-yellow-400 text-yellow-300 p-4 rounded-xl"
+            >
+              <p>
+                ⚠️ <strong>{alert.generatorName}</strong> has a next service due
+                on{" "}
+                <strong>
+                  {alert.nextServiceDate
+                    ? new Date(alert.nextServiceDate).toLocaleDateString()
+                    : "N/A"}
+                </strong>
+              </p>
+              {showAllAlerts && alert.notes && (
+                <p className="mt-2 text-yellow-200">{alert.notes}</p>
+              )}
+            </div>
+          ))}
+
+          {serviceAlerts.length > 2 && (
+            <button
+              onClick={() => setShowAllAlerts(!showAllAlerts)}
+              className="text-sm text-cyan-400 hover:underline mt-2"
+            >
+              {showAllAlerts
+                ? "Show Less"
+                : `Read more (${serviceAlerts.length - 2} more)`}
+            </button>
+          )}
+        </div>
+      )}
+
+      {/* ================= GENERATOR CARDS ================= */}
       <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-8">
         {filtered.map((g) => {
           const isRunning = g.state === "ON";
@@ -213,7 +278,7 @@ function Dashboard() {
                 </span>
               </div>
 
-              {/* ================= CUSTOMER DETAILS ================= */}
+              {/* Customer Details */}
               <div className="bg-blue-900/40 border border-blue-500/30 p-4 rounded-xl mb-4">
                 <h3 className="text-blue-300 font-semibold mb-2">
                   Customer Details
@@ -232,7 +297,7 @@ function Dashboard() {
                 </p>
               </div>
 
-              {/* ================= TELEMETRY ================= */}
+              {/* Telemetry */}
               <div className="bg-cyan-900/30 border border-cyan-500/30 p-4 rounded-xl mb-4">
                 <h3 className="text-cyan-300 font-semibold mb-2">
                   Telemetry Data
@@ -269,7 +334,7 @@ function Dashboard() {
                 View Details
               </button>
 
-              {/* Chart */}
+              {/* Voltage Chart */}
               <div className="h-52 mt-5">
                 <ResponsiveContainer width="100%" height="100%">
                   <LineChart data={g.history}>
