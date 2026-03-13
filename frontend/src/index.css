@@ -2,7 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 * {
-  font-family: "", sans-serif;
+  font-family: "Outfit", sans-serif;
 }
 
 #statusup {
